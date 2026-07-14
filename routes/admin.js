@@ -18,20 +18,46 @@ router.use(requireAuth);
 // --- Joueurs ---
 
 router.get('/players', async (req, res) => {
-  const players = await tursoAll('SELECT * FROM players ORDER BY name');
+  const players = await tursoAll('SELECT * FROM players ORDER BY order_index, name');
   res.json(players);
 });
+
+async function nextPlayerOrderIndex() {
+  const row = await tursoGet('SELECT MAX(order_index) as maxOrder FROM players');
+  return (row && row.maxOrder !== null ? Number(row.maxOrder) : 0) + 1;
+}
 
 router.post('/players', async (req, res) => {
   const { name, avatar_url, tagline } = req.body || {};
   if (!name || !name.trim()) return res.status(400).json({ error: 'Le nom est obligatoire' });
   const id = uuid();
+  const orderIndex = await nextPlayerOrderIndex();
   await tursoRun(
-    'INSERT INTO players (id, name, avatar_url, tagline) VALUES (?, ?, ?, ?)',
-    [id, name.trim(), avatar_url || null, tagline || null]
+    'INSERT INTO players (id, name, avatar_url, tagline, order_index) VALUES (?, ?, ?, ?, ?)',
+    [id, name.trim(), avatar_url || null, tagline || null, orderIndex]
   );
   const player = await tursoGet('SELECT * FROM players WHERE id = ?', [id]);
   res.status(201).json(player);
+});
+
+router.put('/players/reorder', async (req, res) => {
+  const { order } = req.body || {};
+  if (!Array.isArray(order) || order.length === 0) {
+    return res.status(400).json({ error: 'order doit être un tableau de noms, dans l\'ordre voulu' });
+  }
+  const players = await tursoAll('SELECT * FROM players');
+  const byName = new Map(players.map((p) => [p.name.trim().toLowerCase(), p]));
+  const notFound = [];
+  for (let i = 0; i < order.length; i++) {
+    const player = byName.get(String(order[i]).trim().toLowerCase());
+    if (!player) {
+      notFound.push(order[i]);
+      continue;
+    }
+    await tursoRun('UPDATE players SET order_index = ? WHERE id = ?', [i + 1, player.id]);
+  }
+  const updated = await tursoAll('SELECT * FROM players ORDER BY order_index, name');
+  res.json({ players: updated, notFound });
 });
 
 router.put('/players/:id', async (req, res) => {
