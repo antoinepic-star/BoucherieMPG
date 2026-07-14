@@ -24,10 +24,19 @@ function ordinal(n, suffixStyle) {
   return { main: String(n), suffix: suffixStyle === 'e' ? 'e' : 'ème' };
 }
 
+function shuffle(array) {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 async function renderList() {
   const content = document.getElementById('page-content');
   try {
-    const players = await api.get('/api/players');
+    const players = shuffle(await api.get('/api/players'));
     content.innerHTML = `
       <div class="container" style="padding-bottom:0;">
         <h1 class="page-title">Les copains</h1>
