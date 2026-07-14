@@ -23,12 +23,12 @@ router.get('/players', async (req, res) => {
 });
 
 router.post('/players', async (req, res) => {
-  const { name, avatar_url, tagline, favorite_team } = req.body || {};
+  const { name, avatar_url, tagline } = req.body || {};
   if (!name || !name.trim()) return res.status(400).json({ error: 'Le nom est obligatoire' });
   const id = uuid();
   await tursoRun(
-    'INSERT INTO players (id, name, avatar_url, tagline, favorite_team) VALUES (?, ?, ?, ?, ?)',
-    [id, name.trim(), avatar_url || null, tagline || null, favorite_team || null]
+    'INSERT INTO players (id, name, avatar_url, tagline) VALUES (?, ?, ?, ?)',
+    [id, name.trim(), avatar_url || null, tagline || null]
   );
   const player = await tursoGet('SELECT * FROM players WHERE id = ?', [id]);
   res.status(201).json(player);
@@ -37,11 +37,11 @@ router.post('/players', async (req, res) => {
 router.put('/players/:id', async (req, res) => {
   const existing = await tursoGet('SELECT * FROM players WHERE id = ?', [req.params.id]);
   if (!existing) return res.status(404).json({ error: 'Joueur introuvable' });
-  const { name, avatar_url, tagline, favorite_team } = req.body || {};
+  const { name, avatar_url, tagline } = req.body || {};
   if (!name || !name.trim()) return res.status(400).json({ error: 'Le nom est obligatoire' });
   await tursoRun(
-    'UPDATE players SET name = ?, avatar_url = ?, tagline = ?, favorite_team = ? WHERE id = ?',
-    [name.trim(), avatar_url || null, tagline || null, favorite_team || null, req.params.id]
+    'UPDATE players SET name = ?, avatar_url = ?, tagline = ? WHERE id = ?',
+    [name.trim(), avatar_url || null, tagline || null, req.params.id]
   );
   const player = await tursoGet('SELECT * FROM players WHERE id = ?', [req.params.id]);
   res.json(player);

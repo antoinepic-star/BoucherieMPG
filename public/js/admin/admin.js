@@ -73,7 +73,7 @@ async function loadPlayers() {
     .map(
       (p) => `
     <div class="card" style="margin-bottom:8px;padding:12px;">
-      <strong>${p.name}</strong> ${p.favorite_team ? `— ${p.favorite_team}` : ''}
+      <strong>${p.name}</strong>
       <div class="muted">${p.tagline || ''}</div>
       <button type="button" class="btn btn-secondary edit-player-btn" data-id="${p.id}" style="margin-top:8px;">Modifier</button>
     </div>`
@@ -91,7 +91,6 @@ function startEditPlayer(id) {
   document.getElementById('player-name').value = player.name;
   document.getElementById('player-avatar').value = player.avatar_url || '';
   document.getElementById('player-tagline').value = player.tagline || '';
-  document.getElementById('player-team').value = player.favorite_team || '';
   document.getElementById('player-submit-btn').textContent = 'Enregistrer les modifications';
   document.getElementById('player-cancel-btn').style.display = 'inline-block';
 }
@@ -172,7 +171,6 @@ document.getElementById('player-form').addEventListener('submit', async (e) => {
     name: document.getElementById('player-name').value,
     avatar_url: document.getElementById('player-avatar').value,
     tagline: document.getElementById('player-tagline').value,
-    favorite_team: document.getElementById('player-team').value,
   };
   try {
     if (id) await api.adminPut(`/api/admin/players/${id}`, payload);

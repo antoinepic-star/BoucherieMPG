@@ -90,7 +90,6 @@ router.get('/players', async (req, res) => {
       name: p.name,
       avatar_url: p.avatar_url,
       tagline: p.tagline,
-      favorite_team: p.favorite_team,
       score: scoreById.get(p.id) || null,
       badges: computed.badges.get(p.id) || null,
     }))
