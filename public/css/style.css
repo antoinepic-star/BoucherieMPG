@@ -591,8 +591,19 @@ body.nav-bottom .duel-fab {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr auto;
   gap: 8px;
-  align-items: end;
+  align-items: center;
   margin-top: 8px;
+}
+
+.league-result-row-header {
+  margin-top: 16px;
+  margin-bottom: -4px;
+}
+
+.league-result-row-header span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 /* --- Thème "créa" violet (Historique / Détail de ligue) --- */

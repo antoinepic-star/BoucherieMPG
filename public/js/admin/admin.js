@@ -11,22 +11,18 @@ function addLeagueRow(prefill) {
   const row = document.createElement('div');
   row.className = 'league-result-row';
   row.innerHTML = `
-    <div>
-      <label>Joueur</label>
-      <select class="row-player">${playerOptionsHtml(prefill && prefill.player_id)}</select>
-    </div>
-    <div>
-      <label>Rang</label>
-      <input type="number" class="row-rank" min="1" value="${prefill ? prefill.rank : ''}" required />
-    </div>
-    <div>
-      <label>Points</label>
-      <input type="number" step="0.01" class="row-points" value="${prefill ? prefill.points : ''}" required />
-    </div>
+    <select class="row-player">${playerOptionsHtml(prefill && prefill.player_id)}</select>
+    <input type="number" class="row-rank" min="1" value="${prefill && prefill.rank != null ? prefill.rank : ''}" required />
+    <input type="number" step="0.01" class="row-points" value="${prefill && prefill.points != null ? prefill.points : ''}" required />
     <button type="button" class="btn btn-secondary remove-row-btn">✕</button>
   `;
   row.querySelector('.remove-row-btn').addEventListener('click', () => row.remove());
   rows.appendChild(row);
+}
+
+function fillRowsWithAllPlayers() {
+  document.getElementById('league-rows').innerHTML = '';
+  cachedPlayers.forEach((p) => addLeagueRow({ player_id: p.id }));
 }
 
 function readLeagueRows() {
@@ -146,10 +142,10 @@ async function startEditLeague(id) {
 function resetLeagueForm() {
   document.getElementById('league-form').reset();
   document.getElementById('league-id').value = '';
-  document.getElementById('league-rows').innerHTML = '';
   document.getElementById('highlight-rows').innerHTML = '';
   document.getElementById('league-submit-btn').textContent = 'Ajouter la ligue';
   document.getElementById('league-cancel-btn').style.display = 'none';
+  fillRowsWithAllPlayers();
 }
 
 document.getElementById('logout-btn').addEventListener('click', () => {
@@ -214,5 +210,5 @@ document.getElementById('league-form').addEventListener('submit', async (e) => {
 (async function init() {
   await loadPlayers();
   await loadLeagues();
-  addLeagueRow();
+  fillRowsWithAllPlayers();
 })();
