@@ -69,6 +69,7 @@ async function loadPlayers() {
     .map(
       (p) => `
     <div class="card" style="margin-bottom:8px;padding:12px;">
+      <span class="muted">${p.order_index != null ? `#${p.order_index}` : ''}</span>
       <strong>${p.name}</strong>
       <div class="muted">${p.tagline || ''}</div>
       <button type="button" class="btn btn-secondary edit-player-btn" data-id="${p.id}" style="margin-top:8px;">Modifier</button>
@@ -157,6 +158,36 @@ document.getElementById('player-cancel-btn').addEventListener('click', resetPlay
 document.getElementById('league-cancel-btn').addEventListener('click', resetLeagueForm);
 document.getElementById('add-row-btn').addEventListener('click', () => addLeagueRow());
 document.getElementById('add-highlight-btn').addEventListener('click', () => addHighlightRow());
+
+document.getElementById('reorder-submit-btn').addEventListener('click', async () => {
+  const errorEl = document.getElementById('reorder-error');
+  const successEl = document.getElementById('reorder-success');
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+  const order = document
+    .getElementById('reorder-names')
+    .value.split(/[\n,]/)
+    .map((n) => n.trim())
+    .filter(Boolean);
+  if (order.length === 0) {
+    errorEl.textContent = 'Colle au moins un nom.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  try {
+    const result = await api.adminPut('/api/admin/players/reorder', { order });
+    if (result.notFound && result.notFound.length > 0) {
+      errorEl.textContent = `Non trouvés (vérifie l'orthographe) : ${result.notFound.join(', ')}`;
+      errorEl.style.display = 'block';
+    }
+    successEl.textContent = 'Ordre appliqué.';
+    successEl.style.display = 'block';
+    await loadPlayers();
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = 'block';
+  }
+});
 
 document.getElementById('player-form').addEventListener('submit', async (e) => {
   e.preventDefault();

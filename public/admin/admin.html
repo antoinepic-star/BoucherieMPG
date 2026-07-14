@@ -29,6 +29,15 @@
         </div>
         <p class="error-msg" id="player-error" style="display:none;"></p>
       </form>
+
+      <h3 style="margin-top:24px;">Réordonner les joueurs</h3>
+      <p class="muted">Colle la liste des noms, un par ligne (ou séparés par des virgules), dans l'ordre voulu. Cet ordre ne change que l'affichage ici dans le back-office.</p>
+      <textarea id="reorder-names" rows="6" placeholder="Greg&#10;Gui&#10;JS&#10;..."></textarea>
+      <div style="margin-top:12px;">
+        <button type="button" class="btn" id="reorder-submit-btn">Appliquer l'ordre</button>
+      </div>
+      <p class="error-msg" id="reorder-error" style="display:none;"></p>
+      <p class="muted" id="reorder-success" style="display:none;"></p>
     </section>
 
     <section class="card">
