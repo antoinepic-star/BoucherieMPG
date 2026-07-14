@@ -1,0 +1,18 @@
+{
+  "name": "mpg-all-time",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Classement all-time MonPetitGazon entre amis",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^11.0.3"
+  }
+}

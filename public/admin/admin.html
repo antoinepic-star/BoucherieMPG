@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Back-office — Classement MPG</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <span class="title">🔐 Back-office</span>
+    <button class="btn btn-secondary" id="logout-btn" style="background:transparent;color:#fff;border-color:#fff;">Déconnexion</button>
+  </div>
+  <div class="container">
+    <section class="card">
+      <h2>Joueurs</h2>
+      <div id="players-list" class="muted">Chargement…</div>
+      <form id="player-form" style="margin-top:16px;">
+        <input type="hidden" id="player-id" />
+        <label for="player-name">Nom</label>
+        <input type="text" id="player-name" required />
+        <label for="player-avatar">Avatar (URL)</label>
+        <input type="text" id="player-avatar" />
+        <label for="player-tagline">Phrase d'accroche</label>
+        <input type="text" id="player-tagline" />
+        <label for="player-team">Équipe fétiche</label>
+        <input type="text" id="player-team" />
+        <div style="margin-top:16px;">
+          <button type="submit" class="btn" id="player-submit-btn">Ajouter le joueur</button>
+          <button type="button" class="btn btn-secondary" id="player-cancel-btn" style="display:none;">Annuler</button>
+        </div>
+        <p class="error-msg" id="player-error" style="display:none;"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Ligues</h2>
+      <div id="leagues-list" class="muted">Chargement…</div>
+      <form id="league-form" style="margin-top:16px;">
+        <input type="hidden" id="league-id" />
+        <label for="league-name">Nom de la ligue</label>
+        <input type="text" id="league-name" required />
+        <label for="league-period">Période</label>
+        <input type="text" id="league-period" placeholder="ex : 2e semestre 2024" />
+        <label for="league-size">Taille</label>
+        <select id="league-size">
+          <option value="8">8</option>
+          <option value="10">10</option>
+        </select>
+        <label for="league-order">Ordre chronologique (optionnel, auto si vide)</label>
+        <input type="number" id="league-order" />
+        <label for="league-photo">Photo (URL, optionnel)</label>
+        <input type="text" id="league-photo" placeholder="https://..." />
+
+        <h3 style="margin-top:20px;">Story (optionnel)</h3>
+        <label for="league-story-title">Titre de la story</label>
+        <input type="text" id="league-story-title" />
+        <label for="league-story-text">Texte de la story</label>
+        <textarea id="league-story-text" rows="6"></textarea>
+
+        <h3 style="margin-top:20px;">Moments forts (optionnel)</h3>
+        <div id="highlight-rows"></div>
+        <button type="button" class="btn btn-secondary" id="add-highlight-btn" style="margin-top:8px;">+ Ajouter un moment fort</button>
+
+        <h3 style="margin-top:20px;">Résultats</h3>
+        <div id="league-rows"></div>
+        <button type="button" class="btn btn-secondary" id="add-row-btn" style="margin-top:8px;">+ Ajouter un joueur</button>
+
+        <div style="margin-top:16px;">
+          <button type="submit" class="btn" id="league-submit-btn">Ajouter la ligue</button>
+          <button type="button" class="btn btn-secondary" id="league-cancel-btn" style="display:none;">Annuler</button>
+        </div>
+        <p class="error-msg" id="league-error" style="display:none;"></p>
+      </form>
+    </section>
+  </div>
+  <script src="/js/api.js"></script>
+  <script src="/js/admin/admin.js"></script>
+</body>
+</html>

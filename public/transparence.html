@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page transparence — Classement MPG</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Page transparence</h1>
+    <p class="muted">Pour que tout le monde comprenne pourquoi il est classé où il est — pas d'algo caché, pas de triche.</p>
+
+    <div class="card">
+      <h2>1. Le score par ligue</h2>
+      <p>Pour chaque ligue jouée, deux ingrédients entrent en compte :</p>
+      <ul>
+        <li><strong>Ton rang final</strong> — mieux tu termines, plus tu marques de points, et l'écart entre les places du haut du tableau est volontairement plus creusé qu'en bas (finir 1er vaut beaucoup plus que finir 2e, mais la différence entre l'avant-dernier et le dernier est plus faible).</li>
+        <li><strong>Ta marge de points</strong> — combien de points tu as marqué par rapport à la moyenne de <em>ta</em> ligue, ramené à l'échelle de cette ligue. Ça permet de comparer des ligues qui n'ont pas le même barème de points.</li>
+      </ul>
+      <p>Ces deux ingrédients sont additionnés (la marge de points compte pour 2 fois son poids normal) pour donner ton <strong>score de la ligue</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Le score all-time</h2>
+      <p>Ton score all-time est la <strong>moyenne</strong> de tes scores sur toutes les ligues que tu as jouées. Comme ça, que tu aies joué 3 ligues ou 20, ce n'est pas le nombre de participations qui gonfle artificiellement ton score — c'est ta constance.</p>
+      <p>Petit ajustement : si tu as joué <strong>moins de 5 ligues</strong>, un léger malus est appliqué (il diminue à chaque ligue supplémentaire jusqu'à disparaître à la 5e). C'est pour éviter qu'un excellent résultat sur une seule ligue ne propulse quelqu'un en tête du classement avant d'avoir fait ses preuves sur la durée. Ces joueurs sont marqués <span class="badge-provisional">⏳ provisoire</span> dans le classement.</p>
+    </div>
+
+    <div class="card">
+      <h2>3. Exemple chiffré</h2>
+      <p>Imaginons une ligue de 8 joueurs. Tu termines <strong>2e</strong> avec <strong>450 points</strong>, alors que la moyenne de la ligue est de 400 points avec un écart-type de 50.</p>
+      <ul>
+        <li>Score de rang (2e sur 8) : environ <strong>3.6</strong></li>
+        <li>Marge de points : (450 − 400) / 50 = <strong>1</strong> écart-type au-dessus de la moyenne, comptée double : <strong>+2</strong></li>
+        <li>Score de cette ligue : 3.6 + 2 = <strong>5.6</strong></li>
+      </ul>
+      <p>Si c'est ta toute première ligue, le malus d'échantillon (−8 pour 1 seule ligue jouée) s'applique : ton score all-time provisoire serait de 5.6 − 8 = <strong>−2.4</strong>. Rien d'alarmant — il remontera mécaniquement à chaque nouvelle ligue jouée, et le malus disparaît complètement à partir de la 5e.</p>
+    </div>
+
+    <div class="card">
+      <h2>4. Les badges</h2>
+      <p>Le <strong>Hall of Fame</strong> regroupe des records absolus (le plus de points sur une ligue, le plus gros écart entre le 1er et le 2e, etc.) — un seul détenteur à la fois, recalculé automatiquement dès qu'une nouvelle ligue bat le record.</p>
+      <p>Les <strong>badges signature</strong> des mini-profils sont attribués selon ce qui te rend statistiquement le plus atypique par rapport au groupe (pas juste ta valeur brute la plus haute) — c'est pour ça qu'ils changent parfois d'une ligue à l'autre.</p>
+    </div>
+  </div>
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+</body>
+</html>
