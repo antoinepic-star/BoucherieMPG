@@ -36,10 +36,10 @@ async function renderList() {
   const content = document.getElementById('page-content');
   const leagues = await api.get('/api/leagues');
   if (leagues.length === 0) {
-    content.innerHTML = `<h1 class="page-title">Historique</h1><p class="muted">Aucune ligue saisie pour l'instant.</p>`;
+    content.innerHTML = `<h1 class="page-title">Revivre nos ligues</h1><p class="muted">Aucune ligue saisie pour l'instant.</p>`;
     return;
   }
-  content.innerHTML = `<h1 class="page-title">Historique</h1>${leagues.map(leagueCardHtml).join('')}`;
+  content.innerHTML = `<h1 class="page-title">Revivre nos ligues</h1>${leagues.map(leagueCardHtml).join('')}`;
 }
 
 function podiumBlockHtml(result, place) {

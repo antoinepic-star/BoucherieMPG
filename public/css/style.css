@@ -292,41 +292,6 @@ body.nav-bottom .duel-fab {
   color: #fff;
 }
 
-.bottom-nav-plus-sheet {
-  position: fixed;
-  left: 24px;
-  right: 24px;
-  bottom: 92px;
-  max-width: 420px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  padding: 8px;
-  z-index: 26;
-  display: none;
-}
-
-.bottom-nav-plus-sheet.open {
-  display: block;
-}
-
-.bottom-nav-plus-sheet a {
-  display: block;
-  padding: 12px 14px;
-  border-radius: 12px;
-  color: var(--color-text);
-}
-
-.bottom-nav-plus-sheet a:hover {
-  background: var(--color-bg);
-}
-
-.bottom-nav-plus-sheet a.active {
-  color: var(--color-purple-pink);
-  font-weight: 700;
-}
-
 /* --- Accueil (variante bottom nav) --- */
 
 .home-title {
@@ -461,6 +426,21 @@ body.nav-bottom .duel-fab {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.algo-link-btn {
+  display: block;
+  width: fit-content;
+  margin: 24px auto 0;
+  padding: 12px 20px;
+  border: 2px solid var(--color-purple-accent);
+  color: var(--color-purple-accent);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  text-align: center;
 }
 
 .last-league-card .btn-see-league {

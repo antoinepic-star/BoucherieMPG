@@ -180,7 +180,9 @@ async function renderHistoriquePanel(container) {
         <button type="button" class="tab-btn" data-tab="historique">Historique</button>
       </div>
       <div data-panel="classement">${
-        rankings.length === 0 ? `<p class="muted">Aucune ligue saisie pour l'instant.</p>` : classementPanelHtml(rankings)
+        rankings.length === 0
+          ? `<p class="muted">Aucune ligue saisie pour l'instant.</p>`
+          : `${classementPanelHtml(rankings)}<a class="algo-link-btn" href="/transparence.html">Comment marche l'algo ?</a>`
       }</div>
       <div data-panel="historique" style="display:none;"></div>
     `;
