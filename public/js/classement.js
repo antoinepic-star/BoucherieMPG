@@ -79,7 +79,9 @@ function etoilesPanelHtml(players) {
     if (byStars !== 0) return byStars;
     return (a.badges?.spoons || 0) - (b.badges?.spoons || 0);
   });
-  return `<div class="etoiles-list">${sorted.map((p, i) => etoilesRowHtml(p, i + 1)).join('')}</div>`;
+  return `
+    <div class="etoiles-list">${sorted.map((p, i) => etoilesRowHtml(p, i + 1)).join('')}</div>
+    <p class="muted" style="margin-top:16px;">Le chiffre en gras, c'est le nombre d'étoiles. Celui en gris, le nombre de cuillères. En cas d'égalité aux étoiles, celui qui a le moins de cuillères passe devant.</p>`;
 }
 
 async function renderEtoilesPanel(container) {

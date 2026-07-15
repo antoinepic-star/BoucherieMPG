@@ -45,6 +45,16 @@ const HOF_CONTENT = {
       "Le vol plané version classement.\n\nLa plus grosse chute au classement d'une ligue à la suivante, toutes ligues confondues.\n\nOn était en haut, on a fini en bas. Aïe.",
     template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec une chute de ${value} places au classement ! #chutedicare`,
   },
+  grandEcart: {
+    description:
+      "La domination totale, du premier au dernier.\n\nLe plus gros écart de points jamais enregistré entre le 1er et le dernier d'une même ligue.\n\nUne ligue à deux vitesses — et clairement pas dans le bon sens pour tout le monde.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un écart record de ${value} points entre le 1er et le dernier ! #grandécart`,
+  },
+  peloton: {
+    description:
+      "Tout le monde dans un mouchoir de poche.\n\nLe plus petit écart de points jamais enregistré entre le 1er et le dernier d'une même ligue.\n\nUne ligue tellement serrée qu'on aurait pu tirer les résultats au sort.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec seulement ${value} points d'écart entre le 1er et le dernier ! #peloton`,
+  },
 };
 
 function formatValue(v) {
