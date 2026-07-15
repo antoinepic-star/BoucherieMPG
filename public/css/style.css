@@ -355,6 +355,13 @@ body.nav-bottom {
   gap: 10px;
 }
 
+.duel-instruction {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-purple-ink);
+  margin: 0;
+}
+
 .algo-link-btn {
   display: block;
   width: fit-content;

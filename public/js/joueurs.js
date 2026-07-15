@@ -58,23 +58,19 @@ async function renderList() {
     const selected = [];
 
     function render() {
-      const headerHtml = duelMode
-        ? `<h1 class="page-title">Choisis deux joueurs et valide</h1>
+      const actionHtml = duelMode
+        ? `<p class="duel-instruction">Choisis deux joueurs et valide</p>
            <button type="button" class="algo-link-btn" id="duel-launch-btn" ${selected.length === 2 ? '' : 'disabled'}>Lancer le duel</button>`
-        : `<h1 class="page-title">Les copains d'abord</h1>`;
+        : `<button type="button" class="algo-link-btn" id="start-duel-btn">Lancer un duel</button>`;
 
       content.innerHTML = `
         <div class="container" style="padding-bottom:0;">
-          ${headerHtml}
+          <h1 class="page-title">Les copains d'abord</h1>
+          ${actionHtml}
         </div>
         <div class="avatar-grid">
           ${players.map((p) => avatarCellHtml(p, duelMode, selected)).join('')}
         </div>
-        ${
-          !duelMode
-            ? `<button type="button" class="algo-link-btn" id="start-duel-btn">Lancer un duel</button>`
-            : ''
-        }
       `;
 
       if (!duelMode) {
