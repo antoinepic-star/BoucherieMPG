@@ -39,7 +39,7 @@ async function renderList() {
     const players = shuffle(await api.get('/api/players'));
     content.innerHTML = `
       <div class="container" style="padding-bottom:0;">
-        <h1 class="page-title">Les copains</h1>
+        <h1 class="page-title">Les copains d'abord</h1>
       </div>
       <div class="avatar-grid">
         ${players
@@ -63,7 +63,7 @@ function profilPanelHtml(p) {
     <div class="profile-stats-row">
       <div class="stat-pill"><span class="stat-icon">⭐</span><span class="stat-label">${badges.stars} étoile${badges.stars > 1 ? 's' : ''}</span></div>
       <div class="stat-pill"><span class="stat-icon">🥄</span><span class="stat-label">${badges.spoons} cuillère${badges.spoons > 1 ? 's' : ''}</span></div>
-      <div class="stat-pill"><span class="stat-icon" style="font-size:16px;">${rankOrdinal.main}<sup style="font-size:10px;">${rankOrdinal.suffix}</sup></span></div>
+      <div class="stat-pill"><span class="stat-icon">📊</span><span class="stat-label">${rankOrdinal.main}<sup style="font-size:10px;">${rankOrdinal.suffix}</sup> au classement</span></div>
     </div>
     <h2 class="section-title" style="text-align:center;">Ses badges</h2>
     ${badges.signature

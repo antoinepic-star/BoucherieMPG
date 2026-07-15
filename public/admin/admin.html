@@ -41,6 +41,27 @@
     </section>
 
     <section class="card">
+      <h2>Ligue en cours</h2>
+      <p class="muted">S'affiche sur la home en pointillés, tant qu'une ligue est en cours. Laisse le nom vide et enregistre pour faire disparaître la carte une fois la ligue terminée et ajoutée à l'historique.</p>
+      <form id="ongoing-form" style="margin-top:16px;">
+        <label for="ongoing-name">Nom de la ligue en cours</label>
+        <input type="text" id="ongoing-name" placeholder="ex : Les Tanches" />
+        <label for="ongoing-end-at">Date de fin (pour le compte à rebours, optionnel)</label>
+        <input type="datetime-local" id="ongoing-end-at" />
+
+        <h3 style="margin-top:20px;">Phrases hype (optionnel)</h3>
+        <div id="hype-rows"></div>
+        <button type="button" class="btn btn-secondary" id="add-hype-btn" style="margin-top:8px;">+ Ajouter une phrase</button>
+
+        <div style="margin-top:16px;">
+          <button type="submit" class="btn" id="ongoing-submit-btn">Enregistrer</button>
+        </div>
+        <p class="error-msg" id="ongoing-error" style="display:none;"></p>
+        <p class="muted" id="ongoing-success" style="display:none;"></p>
+      </form>
+    </section>
+
+    <section class="card">
       <h2>Ligues</h2>
       <div id="leagues-list" class="muted">Chargement…</div>
       <form id="league-form" style="margin-top:16px;">

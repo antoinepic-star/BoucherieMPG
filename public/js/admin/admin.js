@@ -50,11 +50,53 @@ function readHighlightRows() {
   return [...document.querySelectorAll('#highlight-rows .row-highlight')].map((input) => input.value).filter((v) => v.trim());
 }
 
+function addHypeRow(prefill) {
+  const rows = document.getElementById('hype-rows');
+  const row = document.createElement('div');
+  row.className = 'league-result-row';
+  row.style.gridTemplateColumns = '1fr 2fr auto';
+  row.innerHTML = `
+    <select class="hype-player">${playerOptionsHtml(prefill && prefill.player_id)}</select>
+    <input type="text" class="hype-phrase" value="${prefill && prefill.phrase ? String(prefill.phrase).replace(/"/g, '&quot;') : ''}" placeholder="ex : Je sens le titre cette année..." />
+    <button type="button" class="btn btn-secondary remove-row-btn">✕</button>
+  `;
+  row.querySelector('.remove-row-btn').addEventListener('click', () => row.remove());
+  rows.appendChild(row);
+}
+
+function readHypeRows() {
+  return [...document.querySelectorAll('#hype-rows .league-result-row')]
+    .map((row) => ({
+      player_id: row.querySelector('.hype-player').value,
+      phrase: row.querySelector('.hype-phrase').value,
+    }))
+    .filter((q) => q.phrase.trim());
+}
+
 function refreshRowPlayerOptions() {
   document.querySelectorAll('#league-rows .row-player').forEach((select) => {
     const current = select.value;
     select.innerHTML = playerOptionsHtml(current);
   });
+  document.querySelectorAll('#hype-rows .hype-player').forEach((select) => {
+    const current = select.value;
+    select.innerHTML = playerOptionsHtml(current);
+  });
+}
+
+async function loadOngoing() {
+  const ongoing = await api.adminGet('/api/admin/ongoing-league');
+  document.getElementById('ongoing-name').value = (ongoing && ongoing.name) || '';
+  const endAtInput = document.getElementById('ongoing-end-at');
+  if (ongoing && ongoing.end_at) {
+    const d = new Date(ongoing.end_at * 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    endAtInput.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } else {
+    endAtInput.value = '';
+  }
+  document.getElementById('hype-rows').innerHTML = '';
+  ((ongoing && ongoing.hypeQuotes) || []).forEach((q) => addHypeRow(q));
 }
 
 async function loadPlayers() {
@@ -158,6 +200,27 @@ document.getElementById('player-cancel-btn').addEventListener('click', resetPlay
 document.getElementById('league-cancel-btn').addEventListener('click', resetLeagueForm);
 document.getElementById('add-row-btn').addEventListener('click', () => addLeagueRow());
 document.getElementById('add-highlight-btn').addEventListener('click', () => addHighlightRow());
+document.getElementById('add-hype-btn').addEventListener('click', () => addHypeRow());
+
+document.getElementById('ongoing-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('ongoing-error');
+  const successEl = document.getElementById('ongoing-success');
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+  const name = document.getElementById('ongoing-name').value.trim();
+  const endAtValue = document.getElementById('ongoing-end-at').value;
+  const end_at = endAtValue ? Math.floor(new Date(endAtValue).getTime() / 1000) : null;
+  const hype_quotes = readHypeRows();
+  try {
+    await api.adminPut('/api/admin/ongoing-league', { name, end_at, hype_quotes });
+    successEl.textContent = 'Ligue en cours enregistrée.';
+    successEl.style.display = 'block';
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = 'block';
+  }
+});
 
 document.getElementById('reorder-submit-btn').addEventListener('click', async () => {
   const errorEl = document.getElementById('reorder-error');
@@ -248,4 +311,5 @@ document.getElementById('league-form').addEventListener('submit', async (e) => {
   await loadPlayers();
   await loadLeagues();
   fillRowsWithAllPlayers();
+  await loadOngoing();
 })();
