@@ -77,27 +77,33 @@ function formatLeaguesPhrase(names) {
 
 function hofCardHtml(r) {
   const content = HOF_CONTENT[r.key];
-  const subtitleBlock = `
-    <h3 class="hof-card-subtitle">C'est quoi ce titre ?</h3>
-    <div class="hof-card-description">${multilineHtml(content.description)}</div>`;
+  const bottomBlock = `
+    <div class="hof-card-bottom">
+      <div class="hof-card-separator"></div>
+      <h3 class="hof-card-subtitle">C'est quoi ce titre ?</h3>
+      <div class="hof-card-description">${multilineHtml(content.description)}</div>
+    </div>`;
 
   if (!r.holders || r.holders.length === 0) {
     return `
       <div class="hof-card">
-        <h2 class="hof-card-title">${r.label}</h2>
-        ${subtitleBlock}
-        <p class="hof-card-detail">Pas encore de détenteur.</p>
+        <div class="hof-card-top">
+          <h2 class="hof-card-title">${r.label}</h2>
+          <p class="hof-card-detail">Pas encore de détenteur.</p>
+        </div>
+        ${bottomBlock}
       </div>`;
   }
 
   const leaguesPhrase = formatLeaguesPhrase(r.holders.map((h) => h.leagueName));
   return `
     <div class="hof-card">
-      <h2 class="hof-card-title">${r.label}</h2>
-      ${avatarsStackHtml(r.holders)}
-      <p class="hof-holder-names">${namesLine(r.holders)}</p>
-      ${subtitleBlock}
-      <div class="hof-card-separator"></div>
-      <p class="hof-card-detail">${content.template(leaguesPhrase, formatValue(r.value))}</p>
+      <div class="hof-card-top">
+        <h2 class="hof-card-title">${r.label}</h2>
+        ${avatarsStackHtml(r.holders)}
+        <p class="hof-holder-names">${namesLine(r.holders)}</p>
+        <p class="hof-card-detail">${content.template(leaguesPhrase, formatValue(r.value))}</p>
+      </div>
+      ${bottomBlock}
     </div>`;
 }
