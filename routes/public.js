@@ -155,8 +155,8 @@ router.get('/players/:id1/duel/:id2', async (req, res) => {
   const s2 = computed.scores.find((s) => s.playerId === p2.id);
 
   res.json({
-    player1: { id: p1.id, name: p1.name, score: s1 || null },
-    player2: { id: p2.id, name: p2.name, score: s2 || null },
+    player1: { id: p1.id, name: p1.name, avatarUrl: p1.avatar_url, score: s1 || null },
+    player2: { id: p2.id, name: p2.name, avatarUrl: p2.avatar_url, score: s2 || null },
     scoreGap: s1 && s2 ? Math.abs(s1.scoreGlobal - s2.scoreGlobal) : null,
     p1Wins,
     p2Wins,

@@ -3,24 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Duel — Classement MPG</title>
+  <title>Le duel — Classement MPG</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
-  <div class="container">
-    <h1>⚔️ Duel</h1>
-    <p class="muted">Choisis deux joueurs pour comparer leurs confrontations directes.</p>
-    <div class="card">
-      <label for="select-p1">Joueur 1</label>
-      <select id="select-p1"></select>
-      <label for="select-p2">Joueur 2</label>
-      <select id="select-p2"></select>
-      <div style="margin-top:16px;">
-        <button type="button" class="btn" id="duel-submit-btn">Voir le duel</button>
-      </div>
-      <p class="error-msg" id="duel-error" style="display:none;"></p>
-    </div>
-    <div id="duel-result"></div>
+<body data-nav="bottom" class="theme-purple">
+  <div class="container" id="page-content">
+    <p class="muted">Chargement…</p>
   </div>
   <script src="/js/api.js"></script>
   <script src="/js/nav.js"></script>

@@ -33,23 +33,77 @@ function shuffle(array) {
   return result;
 }
 
+const CHECK_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+
+function avatarCellHtml(p, duelMode, selected) {
+  if (!duelMode) {
+    return `<a href="/joueurs.html?player=${p.id}" class="avatar-cell">${avatarHtml(p.avatar_url)}</a>`;
+  }
+  const isSelected = selected.includes(p.id);
+  const isDisabled = !isSelected && selected.length >= 2;
+  const classes = ['avatar-cell', 'selectable'];
+  if (isSelected) classes.push('selected');
+  if (isDisabled) classes.push('disabled');
+  return `<button type="button" class="${classes.join(' ')}" data-player-id="${p.id}">${avatarHtml(p.avatar_url)}${
+    isSelected ? `<span class="avatar-check">${CHECK_ICON}</span>` : ''
+  }</button>`;
+}
+
 async function renderList() {
   const content = document.getElementById('page-content');
   try {
     const players = shuffle(await api.get('/api/players'));
-    content.innerHTML = `
-      <div class="container" style="padding-bottom:0;">
-        <h1 class="page-title">Les copains d'abord</h1>
-      </div>
-      <div class="avatar-grid">
-        ${players
-          .map(
-            (p) => `
-          <a href="/joueurs.html?player=${p.id}">${avatarHtml(p.avatar_url)}</a>`
-          )
-          .join('')}
-      </div>
-    `;
+    let duelMode = false;
+    const selected = [];
+
+    function render() {
+      const headerHtml = duelMode
+        ? `<h1 class="page-title">Choisis deux joueurs et valide</h1>
+           <button type="button" class="algo-link-btn" id="duel-launch-btn" ${selected.length === 2 ? '' : 'disabled'}>Lancer le duel</button>`
+        : `<h1 class="page-title">Les copains d'abord</h1>`;
+
+      content.innerHTML = `
+        <div class="container" style="padding-bottom:0;">
+          ${headerHtml}
+        </div>
+        <div class="avatar-grid">
+          ${players.map((p) => avatarCellHtml(p, duelMode, selected)).join('')}
+        </div>
+        ${
+          !duelMode
+            ? `<button type="button" class="algo-link-btn" id="start-duel-btn">Lancer un duel</button>`
+            : ''
+        }
+      `;
+
+      if (!duelMode) {
+        content.querySelector('#start-duel-btn').addEventListener('click', () => {
+          duelMode = true;
+          selected.length = 0;
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      } else {
+        content.querySelectorAll('.avatar-cell[data-player-id]').forEach((el) => {
+          el.addEventListener('click', () => {
+            const id = el.dataset.playerId;
+            const idx = selected.indexOf(id);
+            if (idx !== -1) {
+              selected.splice(idx, 1);
+            } else if (selected.length < 2) {
+              selected.push(id);
+            }
+            render();
+          });
+        });
+        content.querySelector('#duel-launch-btn').addEventListener('click', () => {
+          window.location.href = `/duel.html?p1=${selected[0]}&p2=${selected[1]}`;
+        });
+      }
+    }
+
+    render();
   } catch (err) {
     content.innerHTML = `<p class="error-msg">${err.message}</p>`;
   }
@@ -100,7 +154,6 @@ async function renderProfile(id) {
   const content = document.getElementById('page-content');
   try {
     const p = await api.get(`/api/players/${id}`);
-    window.MPG_DUEL_PRESELECT = p.id;
 
     content.innerHTML = `
       <div class="container">
