@@ -2,6 +2,7 @@ const express = require('express');
 const { tursoGet } = require('../lib/db');
 const { recomputeAll, loadEverything } = require('../lib/recompute');
 const { buildHomeHighlights, HOF_META } = require('../lib/highlights');
+const { buildDuelStory } = require('../lib/duelStory');
 const { computeRankHistory } = require('../lib/engine');
 
 const router = express.Router();
@@ -153,14 +154,46 @@ router.get('/players/:id1/duel/:id2', async (req, res) => {
 
   const s1 = computed.scores.find((s) => s.playerId === p1.id);
   const s2 = computed.scores.find((s) => s.playerId === p2.id);
+  const b1 = computed.badges.get(p1.id) || null;
+  const b2 = computed.badges.get(p2.id) || null;
+
+  function personalStats(playerId) {
+    const points = results.filter((r) => r.player_id === playerId).map((r) => r.points);
+    if (points.length === 0) return null;
+    return {
+      best: Math.max(...points),
+      worst: Math.min(...points),
+      avg: points.reduce((a, b) => a + b, 0) / points.length,
+    };
+  }
+
+  const hofNotes = [];
+  for (const [key, record] of Object.entries(computed.hallOfFame)) {
+    if (record && (record.holderId === p1.id || record.holderId === p2.id)) {
+      hofNotes.push({
+        key,
+        holderName: record.holderId === p1.id ? p1.name : p2.name,
+        value: record.value,
+        leagueName: lById.get(record.sinceLeagueId)?.name,
+      });
+    }
+  }
+
+  const story = buildDuelStory({
+    p1: { id: p1.id, name: p1.name, score: s1 || null },
+    p2: { id: p2.id, name: p2.name, score: s2 || null },
+    confrontations,
+    hofNotes,
+  });
 
   res.json({
-    player1: { id: p1.id, name: p1.name, avatarUrl: p1.avatar_url, score: s1 || null },
-    player2: { id: p2.id, name: p2.name, avatarUrl: p2.avatar_url, score: s2 || null },
-    scoreGap: s1 && s2 ? Math.abs(s1.scoreGlobal - s2.scoreGlobal) : null,
+    player1: { id: p1.id, name: p1.name, avatarUrl: p1.avatar_url, score: s1 || null, badges: b1 },
+    player2: { id: p2.id, name: p2.name, avatarUrl: p2.avatar_url, score: s2 || null, badges: b2 },
     p1Wins,
     p2Wins,
     confrontations,
+    story,
+    stats: { player1: personalStats(p1.id), player2: personalStats(p2.id) },
   });
 });
 
