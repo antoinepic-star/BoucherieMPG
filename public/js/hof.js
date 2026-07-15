@@ -3,27 +3,27 @@ const HOF_CONTENT = {
   sniper: {
     description:
       "Un vrai serial buteur.\n\nLe meilleur total de points jamais enregistré sur une seule ligue.\n\nAlerte à la triche ? Non, juste du talent (ou un mercato de dingue).",
-    template: (league, value) => `Obtenu lors de la ligue "${league}" avec un total record de ${value} points ! #sniper`,
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un total record de ${value} points ! #sniper`,
   },
   naufrage: {
     description:
       "Le mec était absent.\nOn aurait dit Bardella à l'Europe.\n\nBref il a marqué l'Histoire de la boucherie MPG par le plus faible total de points sur une ligue.",
-    template: (league, value) => `Obtenu lors de la ligue "${league}" avec un tout petit total de ${value} points ! #jaitoutdonné`,
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un tout petit total de ${value} points ! #jaitoutdonné`,
   },
   fossoyeur: {
     description:
       "Personne dans son rétro.\n\nLe mec a gagné la ligue avec le plus gros écart avec le deuxième.\n\nLa chatte à Dédé ?\nSûrement un peu ;)",
-    template: (league, value) => `Obtenu lors de la ligue "${league}" avec un écart de ${value} points avec le second ! #oùestlaconcurrence?`,
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un écart de ${value} points avec le second ! #oùestlaconcurrence?`,
   },
   photoFinish: {
     description:
       "Ça s'est joué à un cheveu.\n\nLe plus petit écart jamais vu entre le 1er et le 2e d'une ligue.\n\nUn suspense à faire pâlir un final de Ligue des Champions.",
-    template: (league, value) => `Obtenu lors de la ligue "${league}" avec seulement ${value} points d'écart avec le second ! #çasestjouéàrien`,
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec seulement ${value} points d'écart avec le second ! #çasestjouéàrien`,
   },
   ko: {
     description:
       "Le coup de grâce.\n\nLe plus gros écart jamais enregistré entre l'avant-dernier et le dernier d'une ligue.\n\nUne humiliation qui restera dans les annales.",
-    template: (league, value) => `Obtenu lors de la ligue "${league}" avec un écart de ${value} points avec l'avant-dernier ! #KO`,
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un écart de ${value} points avec l'avant-dernier ! #KO`,
   },
 };
 
@@ -43,6 +43,28 @@ function avatarHtml(url, size) {
   return `<div class="avatar-fallback" style="width:${size}px;height:${size}px;">⚽</div>`;
 }
 
+function namesLine(holders) {
+  if (holders.length <= 3) {
+    const names = holders.map((h) => h.name);
+    return names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`;
+  }
+  const extra = holders.length - 1;
+  return `${holders[0].name} et ${extra} autres`;
+}
+
+function avatarsStackHtml(holders) {
+  const shown = holders.slice(0, 3).reverse();
+  return `<div class="hof-avatar-stack">${shown.map((h) => `<div class="hof-avatar-layer">${avatarHtml(h.avatarUrl, 120)}</div>`).join('')}</div>`;
+}
+
+function formatLeaguesPhrase(names) {
+  const unique = [...new Set(names)].filter(Boolean);
+  const quoted = unique.map((n) => `"${n}"`);
+  if (quoted.length <= 1) return `de la ligue ${quoted[0] || ''}`;
+  if (quoted.length === 2) return `des ligues ${quoted[0]} et ${quoted[1]}`;
+  return `des ligues ${quoted.slice(0, -1).join(', ')} et ${quoted[quoted.length - 1]}`;
+}
+
 (async function () {
   const list = document.getElementById('hof-list');
   try {
@@ -55,23 +77,27 @@ function avatarHtml(url, size) {
 
 function hofCardHtml(r) {
   const content = HOF_CONTENT[r.key];
+  const subtitleBlock = `
+    <h3 class="hof-card-subtitle">C'est quoi ce titre ?</h3>
+    <div class="hof-card-description">${multilineHtml(content.description)}</div>`;
+
+  if (!r.holders || r.holders.length === 0) {
+    return `
+      <div class="hof-card">
+        <h2 class="hof-card-title">${r.label}</h2>
+        ${subtitleBlock}
+        <p class="hof-card-detail">Pas encore de détenteur.</p>
+      </div>`;
+  }
+
+  const leaguesPhrase = formatLeaguesPhrase(r.holders.map((h) => h.leagueName));
   return `
     <div class="hof-card">
-      <div class="hof-card-top">
-        <h2 class="hof-card-title">${r.label}</h2>
-        <div class="hof-card-description">${multilineHtml(content.description)}</div>
-      </div>
-      <div class="hof-card-bottom">
-        ${
-          r.holder
-            ? `
-          <div class="hof-holder">
-            ${avatarHtml(r.holderAvatarUrl, 120)}
-            <span>${r.holder}</span>
-          </div>
-          <p class="hof-card-detail">${content.template(r.sinceLeagueName, formatValue(r.value))}</p>`
-            : `<p class="hof-card-detail">Pas encore de détenteur.</p>`
-        }
-      </div>
+      <h2 class="hof-card-title">${r.label}</h2>
+      ${avatarsStackHtml(r.holders)}
+      <p class="hof-holder-names">${namesLine(r.holders)}</p>
+      ${subtitleBlock}
+      <div class="hof-card-separator"></div>
+      <p class="hof-card-detail">${content.template(leaguesPhrase, formatValue(r.value))}</p>
     </div>`;
 }

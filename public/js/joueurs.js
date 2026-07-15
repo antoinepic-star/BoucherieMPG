@@ -125,8 +125,12 @@ function profilPanelHtml(p) {
       </div>`
       )
       .join('')}
-    <h2 class="section-title">C'est qui ce gars ?</h2>
-    <p class="bio-text">${p.tagline || "Pas encore de bio — à ajouter en back-office."}</p>
+    ${
+      p.tagline
+        ? `<h2 class="section-title">C'est qui ce gars ?</h2>
+    <p class="bio-text">${p.tagline}</p>`
+        : ''
+    }
   `;
 }
 

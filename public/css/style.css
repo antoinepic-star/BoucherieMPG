@@ -871,15 +871,61 @@ body.theme-purple {
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 24px;
+  align-items: center;
+  gap: 16px;
 }
 
 .hof-card-title {
   font-size: 34px;
   color: #232323;
   text-align: center;
-  margin: 0 0 16px;
+  margin: 0;
+}
+
+.hof-avatar-stack {
+  display: flex;
+  justify-content: center;
+}
+
+.hof-avatar-layer {
+  width: 120px;
+  height: 120px;
+  margin-left: -40px;
+}
+
+.hof-avatar-layer:first-child {
+  margin-left: 0;
+}
+
+.hof-avatar-layer img,
+.hof-avatar-layer .avatar-fallback {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 9px rgba(0, 0, 0, 0.25);
+  background: var(--color-purple-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.hof-holder-names {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 16px;
+  color: #232323;
+  text-align: center;
+  margin: 0;
+}
+
+.hof-card-subtitle {
+  font-size: 16px;
+  color: #232323;
+  text-align: center;
+  margin: 0;
 }
 
 .hof-card-description {
@@ -892,30 +938,10 @@ body.theme-purple {
   gap: 8px;
 }
 
-.hof-holder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.hof-holder img,
-.hof-holder .avatar-fallback {
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--color-purple-accent-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-}
-
-.hof-holder span {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 16px;
-  color: #232323;
+.hof-card-separator {
+  width: 80px;
+  height: 1px;
+  background: var(--color-border);
 }
 
 .hof-card-detail {

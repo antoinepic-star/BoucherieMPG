@@ -39,16 +39,18 @@ router.get('/hall-of-fame', async (req, res) => {
   const { players, leagues, computed } = await recomputeAll();
   const pById = playerMap(players);
   const lById = leagueMap(leagues);
-  const out = Object.entries(computed.hallOfFame).map(([key, record]) => ({
-    key,
-    ...HOF_META[key],
-    holder: record ? pById.get(record.holderId)?.name || null : null,
-    holderId: record ? record.holderId : null,
-    holderAvatarUrl: record ? pById.get(record.holderId)?.avatar_url || null : null,
-    value: record ? record.value : null,
-    sinceLeagueName: record ? lById.get(record.sinceLeagueId)?.name || null : null,
-    previousHolder: record && record.previousHolderId ? pById.get(record.previousHolderId)?.name || null : null,
-  }));
+  const out = Object.entries(computed.hallOfFame).map(([key, record]) => {
+    if (!record) return { key, ...HOF_META[key], value: null, holders: [] };
+    const holders = [...record.holders]
+      .reverse()
+      .map((h) => ({
+        id: h.holderId,
+        name: pById.get(h.holderId)?.name || null,
+        avatarUrl: pById.get(h.holderId)?.avatar_url || null,
+        leagueName: lById.get(h.leagueId)?.name || null,
+      }));
+    return { key, ...HOF_META[key], value: record.value, holders };
+  });
   res.json(out);
 });
 
@@ -169,12 +171,14 @@ router.get('/players/:id1/duel/:id2', async (req, res) => {
 
   const hofNotes = [];
   for (const [key, record] of Object.entries(computed.hallOfFame)) {
-    if (record && (record.holderId === p1.id || record.holderId === p2.id)) {
+    if (!record) continue;
+    const mine = record.holders.find((h) => h.holderId === p1.id || h.holderId === p2.id);
+    if (mine) {
       hofNotes.push({
         key,
-        holderName: record.holderId === p1.id ? p1.name : p2.name,
+        holderName: mine.holderId === p1.id ? p1.name : p2.name,
         value: record.value,
-        leagueName: lById.get(record.sinceLeagueId)?.name,
+        leagueName: lById.get(mine.leagueId)?.name,
       });
     }
   }
