@@ -61,6 +61,7 @@ function ongoingLeagueCardHtml(ongoing) {
     <div class="ongoing-league-card">
       <div class="overline">LIGUE EN COURS</div>
       <h2>${ongoing.name}</h2>
+      ${ongoing.photoUrl ? `<img class="ongoing-league-photo" src="${ongoing.photoUrl}" alt="" />` : ''}
       <div class="hype-quotes">
         ${ongoing.hypeQuotes
           .map(

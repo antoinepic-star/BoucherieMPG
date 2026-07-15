@@ -87,6 +87,7 @@ function refreshRowPlayerOptions() {
 async function loadOngoing() {
   const ongoing = await api.adminGet('/api/admin/ongoing-league');
   document.getElementById('ongoing-name').value = (ongoing && ongoing.name) || '';
+  document.getElementById('ongoing-photo').value = (ongoing && ongoing.photo_url) || '';
   const endAtInput = document.getElementById('ongoing-end-at');
   if (ongoing && ongoing.end_at) {
     const d = new Date(ongoing.end_at * 1000);
@@ -211,9 +212,10 @@ document.getElementById('ongoing-form').addEventListener('submit', async (e) => 
   const name = document.getElementById('ongoing-name').value.trim();
   const endAtValue = document.getElementById('ongoing-end-at').value;
   const end_at = endAtValue ? Math.floor(new Date(endAtValue).getTime() / 1000) : null;
+  const photo_url = document.getElementById('ongoing-photo').value.trim();
   const hype_quotes = readHypeRows();
   try {
-    await api.adminPut('/api/admin/ongoing-league', { name, end_at, hype_quotes });
+    await api.adminPut('/api/admin/ongoing-league', { name, end_at, photo_url, hype_quotes });
     successEl.textContent = 'Ligue en cours enregistrée.';
     successEl.style.display = 'block';
   } catch (err) {

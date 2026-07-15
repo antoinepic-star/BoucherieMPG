@@ -167,14 +167,14 @@ router.get('/ongoing-league', async (req, res) => {
 });
 
 router.put('/ongoing-league', async (req, res) => {
-  const { name, end_at, hype_quotes } = req.body || {};
+  const { name, end_at, hype_quotes, photo_url } = req.body || {};
   const quotes = Array.isArray(hype_quotes)
     ? hype_quotes.filter((q) => q && q.player_id && q.phrase).map((q) => ({ player_id: q.player_id, phrase: String(q.phrase).trim() }))
     : [];
   await tursoRun(
-    `INSERT INTO ongoing_league (id, name, end_at, hype_quotes_json) VALUES ('current', ?, ?, ?)
-     ON CONFLICT(id) DO UPDATE SET name = excluded.name, end_at = excluded.end_at, hype_quotes_json = excluded.hype_quotes_json`,
-    [name || null, end_at != null ? Number(end_at) : null, JSON.stringify(quotes)]
+    `INSERT INTO ongoing_league (id, name, end_at, hype_quotes_json, photo_url) VALUES ('current', ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET name = excluded.name, end_at = excluded.end_at, hype_quotes_json = excluded.hype_quotes_json, photo_url = excluded.photo_url`,
+    [name || null, end_at != null ? Number(end_at) : null, JSON.stringify(quotes), photo_url || null]
   );
   const row = await tursoGet("SELECT * FROM ongoing_league WHERE id = 'current'");
   res.json({ ...row, hypeQuotes: JSON.parse(row.hype_quotes_json || '[]') });

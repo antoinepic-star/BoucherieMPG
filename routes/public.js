@@ -31,7 +31,7 @@ router.get('/ongoing-league', async (req, res) => {
     playerAvatarUrl: pById.get(q.player_id)?.avatar_url || null,
     phrase: q.phrase,
   }));
-  res.json({ name: row.name, endAt: row.end_at, hypeQuotes });
+  res.json({ name: row.name, endAt: row.end_at, photoUrl: row.photo_url, hypeQuotes });
 });
 
 router.get('/hall-of-fame', async (req, res) => {
