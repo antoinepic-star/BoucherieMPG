@@ -25,6 +25,26 @@ const HOF_CONTENT = {
       "Le coup de grâce.\n\nLe plus gros écart jamais enregistré entre l'avant-dernier et le dernier d'une ligue.\n\nUne humiliation qui restera dans les annales.",
     template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec un écart de ${value} points avec l'avant-dernier ! #KO`,
   },
+  dimanche: {
+    description:
+      "Une victoire, mais pas franchement un exploit.\n\nLe plus faible total de points qui ait quand même suffi à remporter une ligue.\n\nUn dimanche sans concurrence, en somme.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} en gagnant avec seulement ${value} points ! #vainqueurdudimanche`,
+  },
+  boulet: {
+    description:
+      "Un bon score, complètement gâché.\n\nLe plus haut total de points jamais enregistré... pour une dernière place.\n\nMauvaise ligue, mauvais soir, ou juste une génération trop forte autour de lui.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} en terminant dernier malgré ${value} points ! #bouletdoré`,
+  },
+  phenix: {
+    description:
+      "Il était au fond du trou, et puis plus rien ne l'a arrêté.\n\nLa plus grosse remontée au classement d'une ligue à la suivante, toutes ligues confondues.\n\nUne renaissance version boucherie.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec une remontée de ${value} places au classement ! #phénix`,
+  },
+  icare: {
+    description:
+      "Le vol plané version classement.\n\nLa plus grosse chute au classement d'une ligue à la suivante, toutes ligues confondues.\n\nOn était en haut, on a fini en bas. Aïe.",
+    template: (leaguesPhrase, value) => `Obtenu lors ${leaguesPhrase} avec une chute de ${value} places au classement ! #chutedicare`,
+  },
 };
 
 function formatValue(v) {
