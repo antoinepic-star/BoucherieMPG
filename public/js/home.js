@@ -52,6 +52,7 @@ function renderLastLeagueCard(home) {
           ? `<ul class="highlight-list">${home.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>`
           : ''
       }
+      <a class="btn-see-league" href="/historique.html?league=${home.league.id}">Voir la ligue</a>
     </div>`;
 }
 

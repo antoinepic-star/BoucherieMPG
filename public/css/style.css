@@ -463,6 +463,19 @@ body.nav-bottom .duel-fab {
   gap: 10px;
 }
 
+.last-league-card .btn-see-league {
+  display: inline-block;
+  margin-top: 16px;
+  background: var(--color-purple-accent);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
 .ongoing-league-card {
   background: #fff;
   border: 2px dashed var(--color-purple-pink);
