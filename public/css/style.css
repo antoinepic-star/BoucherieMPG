@@ -1351,6 +1351,75 @@ body.theme-purple {
   height: 20px;
 }
 
+/* Onglet Étoiles */
+
+.etoiles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.etoiles-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.etoiles-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.etoiles-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: #232323;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.etoiles-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.etoiles-stars {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: #232323;
+}
+
+.etoiles-spoons {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(35, 35, 35, 0.5);
+}
+
+.etoiles-right img,
+.etoiles-right .avatar-fallback {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 9px rgba(0, 0, 0, 0.25);
+  background: var(--color-purple-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
 /* Podium Classement all-time */
 
 .podium-top {

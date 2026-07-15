@@ -54,6 +54,44 @@ function classementPanelHtml(rankings) {
     </div>`;
 }
 
+// --- Onglet Étoiles ---
+
+function etoilesRowHtml(p, rank) {
+  const badges = p.badges || { stars: 0, spoons: 0 };
+  const o = ordinal(rank);
+  return `
+    <div class="etoiles-row">
+      <div class="etoiles-left">
+        <span class="rank-badge-pill">${o.main}<span class="ordinal-suffix">${o.suffix}</span></span>
+        <span class="etoiles-name">${p.name}</span>
+      </div>
+      <div class="etoiles-right">
+        <span class="etoiles-stars">${badges.stars}</span>
+        <span class="etoiles-spoons">${badges.spoons}</span>
+        ${avatarHtml(p.avatar_url)}
+      </div>
+    </div>`;
+}
+
+function etoilesPanelHtml(players) {
+  const sorted = [...players].sort((a, b) => {
+    const byStars = (b.badges?.stars || 0) - (a.badges?.stars || 0);
+    if (byStars !== 0) return byStars;
+    return (a.badges?.spoons || 0) - (b.badges?.spoons || 0);
+  });
+  return `<div class="etoiles-list">${sorted.map((p, i) => etoilesRowHtml(p, i + 1)).join('')}</div>`;
+}
+
+async function renderEtoilesPanel(container) {
+  container.innerHTML = `<p class="muted">Chargement…</p>`;
+  try {
+    const players = await api.get('/api/players');
+    container.innerHTML = players.length === 0 ? `<p class="muted">Aucun joueur pour l'instant.</p>` : etoilesPanelHtml(players);
+  } catch (err) {
+    container.innerHTML = `<p class="error-msg">${err.message}</p>`;
+  }
+}
+
 // --- Graphique d'évolution du classement all-time ---
 
 const CHART_ROW_HEIGHT = 28;
@@ -180,6 +218,7 @@ async function renderHistoriquePanel(container) {
       <div class="tabs">
         <button type="button" class="tab-btn active" data-tab="classement">Classement</button>
         <button type="button" class="tab-btn" data-tab="historique">Historique</button>
+        <button type="button" class="tab-btn" data-tab="etoiles">Étoiles</button>
       </div>
       <div data-panel="classement">${
         rankings.length === 0
@@ -187,9 +226,11 @@ async function renderHistoriquePanel(container) {
           : `${classementPanelHtml(rankings)}<a class="algo-link-btn" href="/transparence.html">Comment marche l'algo ?</a>`
       }</div>
       <div data-panel="historique" style="display:none;"></div>
+      <div data-panel="etoiles" style="display:none;"></div>
     `;
 
     let historiqueLoaded = false;
+    let etoilesLoaded = false;
     content.querySelectorAll('.tab-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         content.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
@@ -200,6 +241,10 @@ async function renderHistoriquePanel(container) {
         if (btn.dataset.tab === 'historique' && !historiqueLoaded) {
           historiqueLoaded = true;
           renderHistoriquePanel(content.querySelector('[data-panel="historique"]'));
+        }
+        if (btn.dataset.tab === 'etoiles' && !etoilesLoaded) {
+          etoilesLoaded = true;
+          renderEtoilesPanel(content.querySelector('[data-panel="etoiles"]'));
         }
       });
     });
