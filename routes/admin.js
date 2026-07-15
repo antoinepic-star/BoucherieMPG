@@ -43,21 +43,13 @@ router.post('/players', async (req, res) => {
 router.put('/players/reorder', async (req, res) => {
   const { order } = req.body || {};
   if (!Array.isArray(order) || order.length === 0) {
-    return res.status(400).json({ error: 'order doit être un tableau de noms, dans l\'ordre voulu' });
+    return res.status(400).json({ error: 'order doit être un tableau d\'identifiants de joueurs, dans l\'ordre voulu' });
   }
-  const players = await tursoAll('SELECT * FROM players');
-  const byName = new Map(players.map((p) => [p.name.trim().toLowerCase(), p]));
-  const notFound = [];
   for (let i = 0; i < order.length; i++) {
-    const player = byName.get(String(order[i]).trim().toLowerCase());
-    if (!player) {
-      notFound.push(order[i]);
-      continue;
-    }
-    await tursoRun('UPDATE players SET order_index = ? WHERE id = ?', [i + 1, player.id]);
+    await tursoRun('UPDATE players SET order_index = ? WHERE id = ?', [i + 1, order[i]]);
   }
   const updated = await tursoAll('SELECT * FROM players ORDER BY order_index, name');
-  res.json({ players: updated, notFound });
+  res.json({ players: updated });
 });
 
 router.put('/players/:id', async (req, res) => {
@@ -71,6 +63,14 @@ router.put('/players/:id', async (req, res) => {
   );
   const player = await tursoGet('SELECT * FROM players WHERE id = ?', [req.params.id]);
   res.json(player);
+});
+
+router.delete('/players/:id', async (req, res) => {
+  const existing = await tursoGet('SELECT * FROM players WHERE id = ?', [req.params.id]);
+  if (!existing) return res.status(404).json({ error: 'Joueur introuvable' });
+  await tursoRun('DELETE FROM league_results WHERE player_id = ?', [req.params.id]);
+  await tursoRun('DELETE FROM players WHERE id = ?', [req.params.id]);
+  res.json({ ok: true });
 });
 
 // --- Ligues ---
@@ -94,6 +94,26 @@ async function nextOrderIndex() {
   const row = await tursoGet('SELECT MAX(order_index) as maxOrder FROM leagues');
   return (row && row.maxOrder !== null ? Number(row.maxOrder) : 0) + 1;
 }
+
+router.put('/leagues/reorder', async (req, res) => {
+  const { order } = req.body || {};
+  if (!Array.isArray(order) || order.length === 0) {
+    return res.status(400).json({ error: 'order doit être un tableau d\'identifiants de ligues, dans l\'ordre voulu' });
+  }
+  for (let i = 0; i < order.length; i++) {
+    await tursoRun('UPDATE leagues SET order_index = ? WHERE id = ?', [i + 1, order[i]]);
+  }
+  const updated = await tursoAll('SELECT * FROM leagues ORDER BY order_index');
+  res.json({ leagues: updated });
+});
+
+router.delete('/leagues/:id', async (req, res) => {
+  const existing = await tursoGet('SELECT * FROM leagues WHERE id = ?', [req.params.id]);
+  if (!existing) return res.status(404).json({ error: 'Ligue introuvable' });
+  await tursoRun('DELETE FROM league_results WHERE league_id = ?', [req.params.id]);
+  await tursoRun('DELETE FROM leagues WHERE id = ?', [req.params.id]);
+  res.json({ ok: true });
+});
 
 function validateLeaguePayload(body) {
   const { name, size, results } = body || {};

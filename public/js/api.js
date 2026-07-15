@@ -39,4 +39,5 @@ const api = {
   adminGet: (path) => apiFetch(path, { auth: true }),
   adminPost: (path, body) => apiFetch(path, { method: 'POST', body, auth: true }),
   adminPut: (path, body) => apiFetch(path, { method: 'PUT', body, auth: true }),
+  adminDelete: (path) => apiFetch(path, { method: 'DELETE', auth: true }),
 };

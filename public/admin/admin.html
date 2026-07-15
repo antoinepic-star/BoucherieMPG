@@ -6,41 +6,34 @@
   <title>Back-office — Classement MPG</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
+<body class="theme-purple">
   <div class="topbar">
     <span class="title">🔐 Back-office</span>
-    <button class="btn btn-secondary" id="logout-btn" style="background:transparent;color:#fff;border-color:#fff;">Déconnexion</button>
+    <button class="btn-purple-outline" id="logout-btn" style="border-color:#fff;color:#fff;">Déconnexion</button>
   </div>
   <div class="container">
-    <section class="card">
-      <h2>Joueurs</h2>
-      <div id="players-list" class="muted">Chargement…</div>
-      <form id="player-form" style="margin-top:16px;">
-        <input type="hidden" id="player-id" />
-        <label for="player-name">Nom</label>
-        <input type="text" id="player-name" required />
-        <label for="player-avatar">Avatar (URL)</label>
-        <input type="text" id="player-avatar" />
-        <label for="player-tagline">C'est qui ce gars ?</label>
-        <textarea id="player-tagline" rows="4"></textarea>
-        <div style="margin-top:16px;">
-          <button type="submit" class="btn" id="player-submit-btn">Ajouter le joueur</button>
-          <button type="button" class="btn btn-secondary" id="player-cancel-btn" style="display:none;">Annuler</button>
-        </div>
-        <p class="error-msg" id="player-error" style="display:none;"></p>
-      </form>
+    <div class="tabs">
+      <button type="button" class="tab-btn active" data-tab="players">Joueurs</button>
+      <button type="button" class="tab-btn" data-tab="leagues">Ligues</button>
+    </div>
 
-      <h3 style="margin-top:24px;">Réordonner les joueurs</h3>
-      <p class="muted">Colle la liste des noms, un par ligne (ou séparés par des virgules), dans l'ordre voulu. Cet ordre ne change que l'affichage ici dans le back-office.</p>
-      <textarea id="reorder-names" rows="6" placeholder="Greg&#10;Gui&#10;JS&#10;..."></textarea>
-      <div style="margin-top:12px;">
-        <button type="button" class="btn" id="reorder-submit-btn">Appliquer l'ordre</button>
+    <div data-panel="players">
+      <div class="admin-panel-header">
+        <h1 class="page-title">Joueurs</h1>
+        <button type="button" class="btn-purple" id="add-player-btn">+ Ajouter un joueur</button>
       </div>
-      <p class="error-msg" id="reorder-error" style="display:none;"></p>
-      <p class="muted" id="reorder-success" style="display:none;"></p>
-    </section>
+      <div id="players-list" class="admin-list"><p class="muted">Chargement…</p></div>
+    </div>
 
-    <section class="card">
+    <div data-panel="leagues" style="display:none;">
+      <div class="admin-panel-header">
+        <h1 class="page-title">Ligues</h1>
+        <button type="button" class="btn-purple" id="add-league-btn">+ Ajouter une ligue</button>
+      </div>
+      <div id="leagues-list" class="admin-list"><p class="muted">Chargement…</p></div>
+    </div>
+
+    <section class="card" style="margin-top:32px;">
       <h2>Ligue en cours</h2>
       <p class="muted">S'affiche sur la home en pointillés, tant qu'une ligue est en cours. Laisse le nom vide et enregistre pour faire disparaître la carte une fois la ligue terminée et ajoutée à l'historique.</p>
       <form id="ongoing-form" style="margin-top:16px;">
@@ -53,63 +46,33 @@
 
         <h3 style="margin-top:20px;">Phrases hype (optionnel)</h3>
         <div id="hype-rows"></div>
-        <button type="button" class="btn btn-secondary" id="add-hype-btn" style="margin-top:8px;">+ Ajouter une phrase</button>
+        <button type="button" class="btn-purple-outline" id="add-hype-btn" style="margin-top:8px;">+ Ajouter une phrase</button>
 
         <div style="margin-top:16px;">
-          <button type="submit" class="btn" id="ongoing-submit-btn">Enregistrer</button>
+          <button type="submit" class="btn-purple" id="ongoing-submit-btn">Enregistrer</button>
         </div>
         <p class="error-msg" id="ongoing-error" style="display:none;"></p>
         <p class="muted" id="ongoing-success" style="display:none;"></p>
       </form>
     </section>
-
-    <section class="card">
-      <h2>Ligues</h2>
-      <div id="leagues-list" class="muted">Chargement…</div>
-      <form id="league-form" style="margin-top:16px;">
-        <input type="hidden" id="league-id" />
-        <label for="league-name">Nom de la ligue</label>
-        <input type="text" id="league-name" required />
-        <label for="league-period">Période</label>
-        <input type="text" id="league-period" placeholder="ex : 2e semestre 2024" />
-        <label for="league-size">Taille</label>
-        <select id="league-size">
-          <option value="8">8</option>
-          <option value="10">10</option>
-        </select>
-        <label for="league-order">Ordre chronologique (optionnel, auto si vide)</label>
-        <input type="number" id="league-order" />
-        <label for="league-photo">Photo (URL, optionnel)</label>
-        <input type="text" id="league-photo" placeholder="https://..." />
-
-        <h3 style="margin-top:20px;">Story (optionnel)</h3>
-        <label for="league-story-title">Titre de la story</label>
-        <input type="text" id="league-story-title" />
-        <label for="league-story-text">Texte de la story</label>
-        <textarea id="league-story-text" rows="6"></textarea>
-
-        <h3 style="margin-top:20px;">Moments forts (optionnel)</h3>
-        <div id="highlight-rows"></div>
-        <button type="button" class="btn btn-secondary" id="add-highlight-btn" style="margin-top:8px;">+ Ajouter un moment fort</button>
-
-        <h3 style="margin-top:20px;">Résultats</h3>
-        <div class="league-result-row league-result-row-header">
-          <span>Joueur</span>
-          <span>Rang</span>
-          <span>Points</span>
-          <span></span>
-        </div>
-        <div id="league-rows"></div>
-        <button type="button" class="btn btn-secondary" id="add-row-btn" style="margin-top:8px;">+ Ajouter un joueur</button>
-
-        <div style="margin-top:16px;">
-          <button type="submit" class="btn" id="league-submit-btn">Ajouter la ligue</button>
-          <button type="button" class="btn btn-secondary" id="league-cancel-btn" style="display:none;">Annuler</button>
-        </div>
-        <p class="error-msg" id="league-error" style="display:none;"></p>
-      </form>
-    </section>
   </div>
+
+  <div class="admin-drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="admin-drawer" id="drawer">
+    <div class="admin-drawer-inner" id="drawer-content"></div>
+  </div>
+
+  <div class="admin-modal-backdrop" id="confirm-backdrop">
+    <div class="admin-modal">
+      <h3>Confirmer la suppression</h3>
+      <p id="confirm-message"></p>
+      <div class="admin-modal-actions">
+        <button type="button" class="btn-purple-outline" id="confirm-cancel-btn">Annuler</button>
+        <button type="button" class="btn-danger solid" id="confirm-delete-btn">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/api.js"></script>
   <script src="/js/admin/admin.js"></script>
 </body>

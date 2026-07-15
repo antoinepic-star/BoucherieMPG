@@ -6,16 +6,16 @@
   <title>Back-office — Classement MPG</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
-  <div class="container" style="padding-top:60px;">
-    <h1>🔐 Back-office</h1>
-    <p class="muted">Réservé à l'administration de Classement MPG.</p>
-    <div class="card">
+<body class="theme-purple">
+  <div class="container" style="padding-top:80px;max-width:420px;">
+    <h1 class="page-title" style="text-align:center;">🔐 Back-office</h1>
+    <p class="muted" style="text-align:center;margin-bottom:20px;">Réservé à l'administration de Classement MPG.</p>
+    <div class="card" style="border:none;box-shadow:0 4px 20px rgba(75,22,76,0.12);">
       <form id="login-form">
         <label for="password">Mot de passe</label>
         <input type="password" id="password" autocomplete="current-password" required />
         <div style="margin-top:16px;">
-          <button type="submit" class="btn">Se connecter</button>
+          <button type="submit" class="btn-purple" style="width:100%;">Se connecter</button>
         </div>
         <p class="error-msg" id="error" style="display:none;"></p>
       </form>
