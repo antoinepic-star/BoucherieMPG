@@ -1373,6 +1373,11 @@ body.theme-purple {
   gap: 12px;
 }
 
+.podium-avatar-wrap {
+  position: relative;
+  display: inline-block;
+}
+
 .podium-avatar-ring {
   position: relative;
   border-radius: 50%;

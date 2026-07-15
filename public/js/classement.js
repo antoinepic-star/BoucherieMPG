@@ -17,8 +17,10 @@ function podiumSlotHtml(entry, place) {
   if (!entry) return '';
   return `
     <div class="podium-slot ${place}">
-      <div class="podium-avatar-ring ${place}">
-        ${avatarHtml(entry.avatarUrl)}
+      <div class="podium-avatar-wrap">
+        <div class="podium-avatar-ring ${place}">
+          ${avatarHtml(entry.avatarUrl)}
+        </div>
         <span class="podium-rank-badge ${place}">${entry.rank}</span>
       </div>
       <div class="podium-pill">
