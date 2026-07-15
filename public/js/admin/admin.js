@@ -183,6 +183,12 @@ document.getElementById('reorder-submit-btn').addEventListener('click', async ()
     successEl.textContent = 'Ordre appliqué.';
     successEl.style.display = 'block';
     await loadPlayers();
+    // Rafraîchit aussi les lignes de résultats (nouvelle ligue) et les <select> déjà affichés
+    if (!document.getElementById('league-id').value) {
+      fillRowsWithAllPlayers();
+    } else {
+      refreshRowPlayerOptions();
+    }
   } catch (err) {
     errorEl.textContent = err.message;
     errorEl.style.display = 'block';
