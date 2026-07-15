@@ -17,7 +17,7 @@ function leagueCardHtml(league) {
       <div class="league-card-scrim"></div>
       ${
         league.winner
-          ? `<div class="winner-chip">${avatarHtml(league.winner.avatarUrl)}<span>Winner : ${league.winner.name}</span></div>`
+          ? `<div class="winner-chip">${avatarHtml(league.winner.avatarUrl)}<span>L'étoile pour ${league.winner.name}</span></div>`
           : ''
       }
       <div class="league-card-body">
