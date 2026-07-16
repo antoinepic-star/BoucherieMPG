@@ -1721,6 +1721,46 @@ body.theme-purple .topbar .title {
   border-color: var(--color-accent-red);
 }
 
+.admin-ongoing-card {
+  background: #fff;
+  border: 2px dashed var(--color-purple-pink);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.admin-ongoing-tag {
+  display: inline-block;
+  background: var(--color-purple-accent-soft);
+  color: var(--color-purple-accent);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+}
+
+.admin-ongoing-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-ongoing-title-row strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--color-purple-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .admin-panel-header {
   display: flex;
   align-items: center;

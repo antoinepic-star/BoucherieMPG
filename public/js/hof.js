@@ -69,7 +69,8 @@ function multilineHtml(text) {
 }
 
 function avatarHtml(url, size) {
-  if (url) return `<img src="${url}" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;" />`;
+  if (url)
+    return `<img src="${url}" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot; style=&quot;width:${size}px;height:${size}px;&quot;>⚽</div>'" />`;
   return `<div class="avatar-fallback" style="width:${size}px;height:${size}px;">⚽</div>`;
 }
 

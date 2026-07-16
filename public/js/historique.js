@@ -5,7 +5,8 @@ const MEDAL_ICON =
   '<svg viewBox="0 0 24 24" fill="white"><path d="M8 2h8l-2.5 8h-3z"/><circle cx="12" cy="15" r="6.5"/></svg>';
 
 function avatarHtml(url, fallbackEmoji) {
-  if (url) return `<img src="${url}" alt="" />`;
+  if (url)
+    return `<img src="${url}" alt="" onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot;>${fallbackEmoji || '⚽'}</div>'" />`;
   return `<div class="avatar-fallback">${fallbackEmoji || '⚽'}</div>`;
 }
 

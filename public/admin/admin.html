@@ -12,6 +12,14 @@
     <button class="btn-purple-outline" id="logout-btn" style="border-color:#fff;color:#fff;">Déconnexion</button>
   </div>
   <div class="container">
+    <div class="admin-ongoing-card" id="ongoing-card">
+      <span class="admin-ongoing-tag">Ligue en cours</span>
+      <div class="admin-ongoing-title-row">
+        <strong id="ongoing-card-title">Aucune ligue en cours</strong>
+        <span class="admin-row-chevron" id="ongoing-card-chevron"></span>
+      </div>
+    </div>
+
     <div class="tabs">
       <button type="button" class="tab-btn active" data-tab="players">Joueurs</button>
       <button type="button" class="tab-btn" data-tab="leagues">Ligues</button>
@@ -32,29 +40,6 @@
       </div>
       <div id="leagues-list" class="admin-list"><p class="muted">Chargement…</p></div>
     </div>
-
-    <section class="card" style="margin-top:32px;">
-      <h2>Ligue en cours</h2>
-      <p class="muted">S'affiche sur la home en pointillés, tant qu'une ligue est en cours. Laisse le nom vide et enregistre pour faire disparaître la carte une fois la ligue terminée et ajoutée à l'historique.</p>
-      <form id="ongoing-form" style="margin-top:16px;">
-        <label for="ongoing-name">Nom de la ligue en cours</label>
-        <input type="text" id="ongoing-name" placeholder="ex : Les Tanches" />
-        <label for="ongoing-end-at">Date de fin (pour le compte à rebours, optionnel)</label>
-        <input type="datetime-local" id="ongoing-end-at" />
-        <label for="ongoing-photo">Photo (URL, optionnel)</label>
-        <input type="text" id="ongoing-photo" placeholder="https://..." />
-
-        <h3 style="margin-top:20px;">Phrases hype (optionnel)</h3>
-        <div id="hype-rows"></div>
-        <button type="button" class="btn-purple-outline" id="add-hype-btn" style="margin-top:8px;">+ Ajouter une phrase</button>
-
-        <div style="margin-top:16px;">
-          <button type="submit" class="btn-purple" id="ongoing-submit-btn">Enregistrer</button>
-        </div>
-        <p class="error-msg" id="ongoing-error" style="display:none;"></p>
-        <p class="muted" id="ongoing-success" style="display:none;"></p>
-      </form>
-    </section>
   </div>
 
   <div class="admin-drawer-backdrop" id="drawer-backdrop"></div>

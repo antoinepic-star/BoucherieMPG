@@ -105,7 +105,8 @@ function makeSortable(listEl, onReorder) {
 // --- Joueurs ---
 
 function avatarHtml(url) {
-  if (url) return `<img class="admin-row-avatar" src="${url}" alt="" />`;
+  if (url)
+    return `<img class="admin-row-avatar" src="${url}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'admin-row-avatar avatar-fallback',textContent:'⚽'}))" />`;
   return `<div class="admin-row-avatar avatar-fallback">⚽</div>`;
 }
 
@@ -217,7 +218,8 @@ function openPlayerDrawer(player) {
 // --- Ligues ---
 
 function leagueAvatarHtml(url) {
-  if (url) return `<img class="admin-row-avatar" src="${url}" alt="" />`;
+  if (url)
+    return `<img class="admin-row-avatar" src="${url}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'admin-row-avatar avatar-fallback',textContent:'🏆'}))" />`;
   return `<div class="admin-row-avatar avatar-fallback">🏆</div>`;
 }
 
@@ -237,7 +239,8 @@ function leagueRowHtml(l) {
 }
 
 async function loadLeagues() {
-  cachedLeagues = await api.adminGet('/api/admin/leagues');
+  const leagues = await api.adminGet('/api/admin/leagues');
+  cachedLeagues = [...leagues].reverse(); // affichage du plus recent au plus ancien
   renderLeaguesList();
 }
 
@@ -257,7 +260,9 @@ function renderLeaguesList() {
   makeSortable(list, async (ids) => {
     cachedLeagues = ids.map((id) => cachedLeagues.find((l) => l.id === id));
     try {
-      await api.adminPut('/api/admin/leagues/reorder', { order: ids });
+      // La liste affiche le plus recent en premier ; l'ordre chronologique (order_index)
+      // attendu par l'API va du plus ancien au plus recent, donc on inverse avant d'envoyer.
+      await api.adminPut('/api/admin/leagues/reorder', { order: [...ids].reverse() });
     } catch (err) {
       await loadLeagues();
     }
@@ -334,7 +339,7 @@ function leagueFormHtml(league) {
       <label for="league-size">Taille</label>
       <select id="league-size">
         <option value="8" ${isEdit && Number(league.size) === 8 ? 'selected' : ''}>8</option>
-        <option value="10" ${isEdit && Number(league.size) === 10 ? 'selected' : ''}>10</option>
+        <option value="10" ${!isEdit || Number(league.size) === 10 ? 'selected' : ''}>10</option>
       </select>
       <label for="league-photo">Photo (URL, optionnel)</label>
       <input type="text" id="league-photo" placeholder="https://..." value="${isEdit ? escapeAttr(league.photo_url) : ''}" />
@@ -423,6 +428,8 @@ function openLeagueDrawer(league) {
 
 // --- Ligue en cours ---
 
+let cachedOngoing = null;
+
 function addHypeRow(prefill) {
   const rows = document.getElementById('hype-rows');
   const row = document.createElement('div');
@@ -446,44 +453,80 @@ function readHypeRows() {
     .filter((q) => q.phrase.trim());
 }
 
-async function loadOngoing() {
-  const ongoing = await api.adminGet('/api/admin/ongoing-league');
-  document.getElementById('ongoing-name').value = (ongoing && ongoing.name) || '';
-  document.getElementById('ongoing-photo').value = (ongoing && ongoing.photo_url) || '';
-  const endAtInput = document.getElementById('ongoing-end-at');
-  if (ongoing && ongoing.end_at) {
-    const d = new Date(ongoing.end_at * 1000);
-    const pad = (n) => String(n).padStart(2, '0');
-    endAtInput.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  } else {
-    endAtInput.value = '';
-  }
-  document.getElementById('hype-rows').innerHTML = '';
-  ((ongoing && ongoing.hypeQuotes) || []).forEach((q) => addHypeRow(q));
+function formatOngoingEndAt(endAt) {
+  const d = new Date(endAt * 1000);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-document.getElementById('add-hype-btn').addEventListener('click', () => addHypeRow());
+function updateOngoingCard() {
+  document.getElementById('ongoing-card-title').textContent =
+    cachedOngoing && cachedOngoing.name ? cachedOngoing.name : 'Aucune ligue en cours';
+  document.getElementById('ongoing-card-chevron').innerHTML = CHEVRON_ICON;
+}
 
-document.getElementById('ongoing-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const errorEl = document.getElementById('ongoing-error');
-  const successEl = document.getElementById('ongoing-success');
-  errorEl.style.display = 'none';
-  successEl.style.display = 'none';
-  const name = document.getElementById('ongoing-name').value.trim();
-  const endAtValue = document.getElementById('ongoing-end-at').value;
-  const end_at = endAtValue ? Math.floor(new Date(endAtValue).getTime() / 1000) : null;
-  const photo_url = document.getElementById('ongoing-photo').value.trim();
-  const hype_quotes = readHypeRows();
-  try {
-    await api.adminPut('/api/admin/ongoing-league', { name, end_at, photo_url, hype_quotes });
-    successEl.textContent = 'Ligue en cours enregistrée.';
-    successEl.style.display = 'block';
-  } catch (err) {
-    errorEl.textContent = err.message;
-    errorEl.style.display = 'block';
-  }
-});
+async function loadOngoing() {
+  cachedOngoing = await api.adminGet('/api/admin/ongoing-league');
+  updateOngoingCard();
+}
+
+function ongoingFormHtml(ongoing) {
+  return `
+    <div class="admin-drawer-header">
+      <h2>Ligue en cours</h2>
+      <button type="button" class="admin-drawer-close" id="drawer-close-btn" aria-label="Fermer">${CLOSE_ICON}</button>
+    </div>
+    <p class="muted">S'affiche sur la home en pointillés, tant qu'une ligue est en cours. Laisse le nom vide et enregistre pour faire disparaître la carte une fois la ligue terminée et ajoutée à l'historique.</p>
+    <form id="ongoing-form" style="margin-top:16px;">
+      <label for="ongoing-name">Nom de la ligue en cours</label>
+      <input type="text" id="ongoing-name" placeholder="ex : Les Tanches" value="${ongoing && ongoing.name ? escapeAttr(ongoing.name) : ''}" />
+      <label for="ongoing-end-at">Date de fin (pour le compte à rebours, optionnel)</label>
+      <input type="datetime-local" id="ongoing-end-at" value="${ongoing && ongoing.end_at ? formatOngoingEndAt(ongoing.end_at) : ''}" />
+      <label for="ongoing-photo">Photo (URL, optionnel)</label>
+      <input type="text" id="ongoing-photo" placeholder="https://..." value="${ongoing && ongoing.photo_url ? escapeAttr(ongoing.photo_url) : ''}" />
+
+      <h3 style="margin-top:20px;">Phrases hype (optionnel)</h3>
+      <div id="hype-rows"></div>
+      <button type="button" class="btn-purple-outline" id="add-hype-btn" style="margin-top:8px;">+ Ajouter une phrase</button>
+
+      <div class="admin-drawer-actions">
+        <button type="submit" class="btn-purple" id="ongoing-submit-btn">Enregistrer</button>
+      </div>
+      <p class="error-msg" id="ongoing-error" style="display:none;"></p>
+      <p class="muted" id="ongoing-success" style="display:none;"></p>
+    </form>`;
+}
+
+function openOngoingDrawer() {
+  openDrawer(ongoingFormHtml(cachedOngoing));
+
+  document.getElementById('add-hype-btn').addEventListener('click', () => addHypeRow());
+  ((cachedOngoing && cachedOngoing.hypeQuotes) || []).forEach((q) => addHypeRow(q));
+
+  document.getElementById('ongoing-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById('ongoing-error');
+    const successEl = document.getElementById('ongoing-success');
+    errorEl.style.display = 'none';
+    successEl.style.display = 'none';
+    const name = document.getElementById('ongoing-name').value.trim();
+    const endAtValue = document.getElementById('ongoing-end-at').value;
+    const end_at = endAtValue ? Math.floor(new Date(endAtValue).getTime() / 1000) : null;
+    const photo_url = document.getElementById('ongoing-photo').value.trim();
+    const hype_quotes = readHypeRows();
+    try {
+      cachedOngoing = await api.adminPut('/api/admin/ongoing-league', { name, end_at, photo_url, hype_quotes });
+      updateOngoingCard();
+      successEl.textContent = 'Ligue en cours enregistrée.';
+      successEl.style.display = 'block';
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.style.display = 'block';
+    }
+  });
+}
+
+document.getElementById('ongoing-card').addEventListener('click', () => openOngoingDrawer());
 
 // --- Onglets & init ---
 

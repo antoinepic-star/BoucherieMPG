@@ -1,8 +1,10 @@
 const RANK_BADGE_COLORS = { 1: 'gold', 2: 'silver', 3: 'bronze' };
 
 function avatarHtml(url, size, fallbackEmoji) {
-  if (url) return `<img src="${url}" alt="" style="width:${size}px;height:${size}px;" />`;
-  return `<div class="avatar-fallback" style="width:${size}px;height:${size}px;">${fallbackEmoji || '⚽'}</div>`;
+  const emoji = fallbackEmoji || '⚽';
+  if (url)
+    return `<img src="${url}" alt="" style="width:${size}px;height:${size}px;" onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot; style=&quot;width:${size}px;height:${size}px;&quot;>${emoji}</div>'" />`;
+  return `<div class="avatar-fallback" style="width:${size}px;height:${size}px;">${emoji}</div>`;
 }
 
 async function renderPlayerStrip() {

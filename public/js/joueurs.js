@@ -14,7 +14,8 @@ const SIGNATURE_BADGE_DESCRIPTIONS = {
 };
 
 function avatarHtml(url, fallbackEmoji) {
-  if (url) return `<img src="${url}" alt="" />`;
+  if (url)
+    return `<img src="${url}" alt="" onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot;>${fallbackEmoji || '⚽'}</div>'" />`;
   return `<div class="avatar-fallback">${fallbackEmoji || '⚽'}</div>`;
 }
 
@@ -165,7 +166,7 @@ async function renderProfile(id) {
         </div>
         ${
           p.avatar_url
-            ? `<img class="profile-avatar-big" src="${p.avatar_url}" alt="" />`
+            ? `<img class="profile-avatar-big" src="${p.avatar_url}" alt="" onerror="this.outerHTML='<div class=&quot;profile-avatar-big avatar-fallback&quot;>⚽</div>'" />`
             : `<div class="profile-avatar-big avatar-fallback">⚽</div>`
         }
         <div class="tabs">
